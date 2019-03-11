@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.3.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.jgy</groupId>
+	<artifactId>producer-contract</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>producer-contract</name>
+	<description>Demo project for Spring Boot</description>
+
+	<properties>
+		<!--<java.version>1.8</java.version>-->
+		<spring-cloud.version>Greenwich.SR1</spring-cloud.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<spring-cloud-contract.version>2.1.2.BUILD-SNAPSHOT</spring-cloud-contract.version>
+		<spring-cloud-release.version>Greenwich.BUILD-SNAPSHOT</spring-cloud-release.version>
+		<excludeBuildFolders>true</excludeBuildFolders>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-contract-stub-runner</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>
+				spring-cloud-starter-contract-verifier
+			</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<!-- <dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>-->
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud-release.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+	<build>
+		<!-- <plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+                <version>1.2.2.RELEASE</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <baseClassForTests>com.jgy.contract.example.BaseTestClass
+                    </baseClassForTests>
+                </configuration>
+			</plugin>
+		</plugins> -->
+		
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+				<version>${spring-cloud-contract.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<!-- By default it would search under src/test/resources/ -->
+					<contractsDirectory>${project.basedir}</contractsDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+			    <groupId>org.springframework.cloud</groupId>
+			    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+			    <configuration>
+			        <contractsMode>LOCAL</contractsMode>
+			        <contractDependency>
+			            <groupId>com.jgy</groupId>
+			            <artifactId>store-contracts</artifactId>
+			        </contractDependency>
+			    </configuration>
+			</plugin>
+			<!-- <plugin>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+				<configuration>
+					<contractsMode>REMOTE</contractsMode>
+					<contractsRepositoryUrl>
+						http://link/to/your/nexus/or/artifactory/or/sth
+					</contractsRepositoryUrl>
+					<contractDependency>
+						<groupId>com.example.standalone</groupId>
+						<artifactId>contracts</artifactId>
+					</contractDependency>
+				</configuration>
+			</plugin> -->
+		</plugins>
+		
+		
+		<pluginManagement>
+	        <plugins>
+	            <!-- This plugin's configuration is used to store Eclipse m2e settings
+	                only. It has no influence on the Maven build itself. -->
+	            <plugin>
+	                <groupId>org.eclipse.m2e</groupId>
+	                <artifactId>lifecycle-mapping</artifactId>
+	                <version>1.0.0</version>
+	                <configuration>
+	                    <lifecycleMappingMetadata>
+	                        <pluginExecutions>
+	                             <pluginExecution>
+	                                <pluginExecutionFilter>
+	                                    <groupId>org.springframework.cloud</groupId>
+	                                    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+	                                    <versionRange>[1.0,)</versionRange>
+	                                    <goals>
+	                                        <goal>convert</goal>
+	                                    </goals>
+	                                </pluginExecutionFilter>
+	                                <action>
+	                                    <execute />
+	                                </action>
+	                             </pluginExecution>
+	                        </pluginExecutions>
+	                    </lifecycleMappingMetadata>
+	                </configuration>
+	            </plugin>
+	        </plugins>
+    	</pluginManagement>
+	</build>
+	
+	<repositories>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+	
+</project>
